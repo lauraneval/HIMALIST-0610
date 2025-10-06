@@ -1,2 +1,4 @@
 # HIMALIST-0610
-HimaList Projek Manager
+
+Main file of HimaList anime recomendations
+Contain configuration file,and asset
