@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anime Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* LOGIN STYLE */
+        .login-container {
+            background: #333;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            margin: 100px auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 0.7rem 1rem;
+            background: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #e03d00;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 0.5rem;
+        }
+
+        /* HOME STYLE */
+        nav {
+            background: #333;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .container {
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: #444;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: #222;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .logout {
+            background: red;
+        }
+
+        /* HIDE ELEMENT */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="errorMsg" class="error"></p>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="hidden">
+        <nav>
+            <h1>Anime Recommender</h1>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search anime...">
+                <button onclick="searchAnime()">Search</button>
+                <button class="logout" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="container" id="animeContainer">
+            <!-- Hasil anime -->
+        </div>
+
+        <footer>
+            Powered by Jikan API
+        </footer>
+    </div>
+
+    <script>
+        // Fungsi Login
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            const errorMsg = document.getElementById("errorMsg");
+
+            // Dummy akun
+            const dummyUser = "admin";
+            const dummyPass = "12345";
+
+            if (user === dummyUser && pass === dummyPass) {
+                localStorage.setItem("isLoggedIn", "true");
+                showHome();
+            } else {
+                errorMsg.textContent = "Username atau password salah!";
+            }
+        }
+
+        // Fungsi Logout
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            document.getElementById("homePage").classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+        }
+
+        // Tampilkan Home kalau sudah login
+        function showHome() {
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("homePage").classList.remove("hidden");
+        }
+
+        // Cek status login saat reload
+        if (localStorage.getItem("isLoggedIn") === "true") {
+            showHome();
+        }
+
+        // Fungsi Search Anime
+        async function searchAnime() {
+            const query = document.getElementById("searchInput").value;
+            const res = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&limit=6`);
+            const data = await res.json();
+            const container = document.getElementById("animeContainer");
+            container.innerHTML = "";
+
+            data.data.forEach(anime => {
+                const card = `
+        <div class="card">
+            <img src="${anime.images.jpg.image_url}" alt="${anime.title}">
+            <h3>${anime.title}</h3>
+            <p>⭐ ${anime.score || "N/A"}</p>
+        </div>
+        `;
+                container.innerHTML += card;
+            });
+        }
+    </script>
+</body>
+
+</html>
