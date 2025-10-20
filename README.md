@@ -109,7 +109,7 @@ Contain all configuration file, and asset system design structures.
 
 **Class Diagram Design:**
 <p align="center">
-  <img src="assets/classdiagram/diagram.jpg" alt="Class Diagram" width="55%">
+  <img src="assets/classdiagram/cd.jpg" alt="Class Diagram" width="55%">
 </p>
 
 </details>
