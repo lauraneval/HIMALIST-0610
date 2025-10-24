@@ -8,15 +8,44 @@ const Navbar = async () => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  let userRole = null;
+  if (user) {
+    const { data: userData, error: roleError } = await supabase
+      .from('user')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (roleError) {
+      console.error("Error fetching user role:", roleError.message);
+    } else {
+      userRole = userData?.role;
+    }
+  }
+
+  const isAdmin = user && userRole === 'admin';
+
   return (
     <nav className="border-b bg-background w-full flex items-center">
       <div className="flex w-full items-center justify-between my-4">
-        <Link className="font-bold" href="/">
-          Home
-        </Link>
+        <h1 className="font-bold">
+          HimaList
+        </h1>
 
         <div className="flex items-center gap-x-5">
-          <Link href="/private">Private</Link>
+          {isAdmin ? (
+            <>
+              <Link href="/">Dashboard</Link>
+              <Link href="/admin/anime">Anime</Link>
+              <Link href="/admin/studio">Studio</Link>
+              <Link href="/admin/genre">Genre</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/">Home</Link>
+              <Link href="/admin/anime">Gallery</Link>
+            </>
+          )}
         </div>
         <div className="flex items-center gap-x-5">
         {!user ? (

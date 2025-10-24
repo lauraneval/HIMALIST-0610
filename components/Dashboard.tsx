@@ -2,35 +2,16 @@
 
 import { createClient } from "@/utils/supabase/client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent, CardFooter } from "./ui/card";
 import Image from "next/image";
 import { AnimeWithDetails } from "@/lib/types";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function Dashboard() {
-    // async function getAnimeDetails(id: number) {
-    //     const { data, error } = await createClient()
-    //         .from('anime')
-    //         .select('*, studio(*), genre(*)')
-    //         .eq('id', id)
-    //         .single();
-
-    //     if (error) {
-    //         console.error('Error fetching anime details:', error.message);
-    //         return null;
-    //     }
-    //     return data;
-    // }
-
     const [animeList, setAnimeList] = useState<AnimeWithDetails[]>([]);
-    // const [genres , setGenres] = useState<Genre[]>([]);
-    // const [selectedGenre, setSelectedGenre] = useState<string>('all');
 
     useEffect(() => {
-        // const fetchGenres = async () => {
-        //     const { data, error } = await createClient().from('genre').select('*');
-        //     if (data) setGenres(data);
-        // }
-
         const fetchAnime = async () => {
             const { data, error } = await createClient().from('anime').select('*, studio(*), genre(*)');
             if (error) console.error('Error fetching anime:', error);
@@ -67,6 +48,13 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </CardContent>
+                        <CardFooter>
+                            <Link href={`/anime/${animeList.slug}`} className="w-full">
+                                <Button className="w-full font-bold" size="lg">
+                                    Detail Anime
+                                </Button>
+                            </Link>
+                        </CardFooter>
                     </Card>
                 ))}
             </div>

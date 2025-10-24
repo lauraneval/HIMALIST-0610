@@ -12,3 +12,8 @@ export type AnimeWithDetails = Anime & {
     studio: Studio | null;
     genre: Genre[];
 };
+
+export type StudioGenre = {
+    studio: Studio[];
+    genre: Genre[];
+};

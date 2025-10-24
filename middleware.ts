@@ -3,6 +3,10 @@ import { updateSession } from '@/utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
     return await updateSession(request)
+    // const response = await updateSession(request);
+    // const pathname = request.nextUrl.pathname;
+    // response.headers.set("x-next-pathname", pathname);
+    // return response;
     }
 
     export const config = {

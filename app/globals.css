@@ -57,7 +57,7 @@
   }
   .dark {
 
-    --background: 0 0% 3.9%;
+    --background: 0, 0%, 11.76%;
 
     --foreground: 0 0% 98%;
 
@@ -73,11 +73,13 @@
 
     --primary-foreground: 0 0% 9%;
 
-    --secondary: 0 0% 14.9%;
+    --secondary: 23.94, 81.53%, 51.18%;
 
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 14.9%;
+    --secondary-hover: 23.94 81.53% 41.18%;
+
+    --muted: 0 0% 25.1%;
 
     --muted-foreground: 0 0% 63.9%;
 
@@ -85,11 +87,11 @@
 
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive:0, 84.24%, 60.2%;
 
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0, 62.82%, 30.59%;
 
-    --border: 0 0% 14.9%;
+    --border: 0 0% 30%;
 
     --input: 0 0% 14.9%;
 
