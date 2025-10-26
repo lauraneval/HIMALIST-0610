@@ -103,7 +103,6 @@ Contain all configuration file, and asset system design structures.
 
 ---
 
-
 <details>
 <summary>Class Diagram</summary>
 
@@ -116,6 +115,42 @@ Contain all configuration file, and asset system design structures.
 
 ---
 
+
+<details>
+<summary>Activity Diagram</summary>
+
+**Activity Diagram Design:**
+<p align="center">
+  <img src="assets/activitydiagram/activity.jpg" alt="Activity Diagram" width="55%">
+</p>
+
+</details>
+
+---
+
+<details>
+<summary>Use Case Diagram</summary>
+
+**Use Case Diagram Design:**
+<p align="center">
+  <img src="assets/usecasediagram/uc.jpg" alt="Use Case Diagram" width="55%">
+</p>
+
+</details>
+
+---
+
+<details>
+<summary>Sequence Diagram</summary>
+
+**Sequence Diagram Design:**
+<p align="center">
+  <img src="assets/sequencediagram/sequence.jpg" alt="Sequence Diagram" width="55%">
+</p>
+
+</details>
+
+---
 
 <details>
 <summary>Links</summary>
