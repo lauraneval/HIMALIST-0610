@@ -123,12 +123,12 @@ Contain all configuration file, and asset system design structures.
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/activitydiagram/user.jpg" alt="ADUser" width="65%"><br>
-      <sub><b>Image 1:</b> AD User</sub>
+      <img src="assets/activitydiagram/register.jpg" alt="ADRegister" width="65%"><br>
+      <sub><b>Image 1:</b> AD Register</sub>
     </td>
     <td align="center">
-      <img src="assets/activitydiagram/admin.jpg" alt="ADAdmin" width="65%"><br>
-      <sub><b>Imager 2:</b> AD Admin</sub>
+      <img src="assets/activitydiagram/login.jpg" alt="ADLogin" width="65%"><br>
+      <sub><b>Imager 2:</b> AD Login</sub>
     </td>
   </tr>
 </table>
@@ -165,12 +165,12 @@ Contain all configuration file, and asset system design structures.
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/sequencediagram/user.jpg" alt="SDUser" width="65%"><br>
-      <sub><b>Image 1:</b> SD User</sub>
+      <img src="assets/sequencediagram/register.jpg" alt="SDRegister" width="65%"><br>
+      <sub><b>Image 1:</b> SD Register</sub>
     </td>
     <td align="center">
-      <img src="assets/sequencediagram/admin.jpg" alt="SDAdmin" width="65%"><br>
-      <sub><b>Imager 2:</b> SD Admin</sub>
+      <img src="assets/sequencediagram/login.jpg" alt="SDLogin" width="65%"><br>
+      <sub><b>Imager 2:</b> SD Login</sub>
     </td>
   </tr>
 </table>
