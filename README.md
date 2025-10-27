@@ -120,9 +120,18 @@ Contain all configuration file, and asset system design structures.
 <summary>Activity Diagram</summary>
 
 **Activity Diagram Design:**
-<p align="center">
-  <img src="assets/activitydiagram/activity.jpg" alt="Activity Diagram" width="55%">
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="assets/activitydiagram/user.jpg" alt="ADUser" width="65%"><br>
+      <sub><b>Image 1:</b> AD User</sub>
+    </td>
+    <td align="center">
+      <img src="assets/activitydiagram/admin.jpg" alt="ADAdmin" width="65%"><br>
+      <sub><b>Imager 2:</b> AD Admin</sub>
+    </td>
+  </tr>
+</table>
 
 </details>
 
@@ -132,9 +141,18 @@ Contain all configuration file, and asset system design structures.
 <summary>Use Case Diagram</summary>
 
 **Use Case Diagram Design:**
-<p align="center">
-  <img src="assets/usecasediagram/uc.jpg" alt="Use Case Diagram" width="55%">
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="assets/usecasediagram/user.jpg" alt="UCUser" width="65%"><br>
+      <sub><b>Image 1:</b> UC User</sub>
+    </td>
+    <td align="center">
+      <img src="assets/usecasediagram/admin.jpg" alt="UCAdmin" width="65%"><br>
+      <sub><b>Imager 2:</b> UC Admin</sub>
+    </td>
+  </tr>
+</table>
 
 </details>
 
@@ -144,9 +162,18 @@ Contain all configuration file, and asset system design structures.
 <summary>Sequence Diagram</summary>
 
 **Sequence Diagram Design:**
-<p align="center">
-  <img src="assets/sequencediagram/sequence.jpg" alt="Sequence Diagram" width="55%">
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="assets/sequencediagram/user.jpg" alt="SDUser" width="65%"><br>
+      <sub><b>Image 1:</b> SD User</sub>
+    </td>
+    <td align="center">
+      <img src="assets/sequencediagram/admin.jpg" alt="SDAdmin" width="65%"><br>
+      <sub><b>Imager 2:</b> SD Admin</sub>
+    </td>
+  </tr>
+</table>
 
 </details>
 
