@@ -5,6 +5,8 @@ import cliProgress from "cli-progress";
 
 dotenv.config({ path: ".env.local" });
 
+type Genre = { name: string };
+
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -55,6 +57,18 @@ async function syncAnimeFromJikan() {
 
         for (const [index, anime] of data.entries()) {
         try {
+            // --- Filter ---
+            const blockedGenres = ["hentai", "erotica", "ecchi"];
+            const hasBlockedGenre = (anime.genres as Genre[] | undefined)?.some((g) =>
+                blockedGenres.includes(g.name.toLowerCase())
+            );
+
+            if (hasBlockedGenre) {
+            console.log(`⛔ Skipping adult genre: ${anime.title}`);
+            progressBar.update(index + 1);
+            continue;
+            }
+
             const slug = slugify(anime.title, { lower: true });
             const studioName = anime.studios?.[0]?.name || "Unknown Studio";
 
