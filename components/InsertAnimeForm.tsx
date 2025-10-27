@@ -146,10 +146,17 @@ export default function InsertAnimeForm({ studios, genres, onSuccess }: InsertAn
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary" disabled={isSubmitting}>Cancel</Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="cursor-pointer border border-secondary hover:bg-muted-foreground hover:text-background hover:border-foreground"
+                            disabled={isSubmitting}
+                        >
+                            Cancel
+                        </Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? "Adding Anime..." : "Add Anime"}
+                    <Button type="submit" variant="secondary" className="cursor-pointer hover:bg-secondary-hover" disabled={isSubmitting}>
+                        {isSubmitting ? "Adding" : "Add"}
                     </Button>
                 </DialogFooter>
             </form>

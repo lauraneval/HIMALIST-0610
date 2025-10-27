@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const protectedPaths = ['/admin', '/private']
+const protectedPaths = ['/admin', '/private', '/profile']
 
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -49,21 +49,6 @@ export async function updateSession(request: NextRequest) {
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
-
-    // if (
-    //     !user &&
-    //     !request.nextUrl.pathname.startsWith('/login') &&
-    //     !request.nextUrl.pathname.startsWith('/register') &&
-    //     !request.nextUrl.pathname.startsWith('/forgot-password') &&
-    //     !request.nextUrl.pathname.startsWith('/reset-password') &&
-    //     !request.nextUrl.pathname.startsWith('/auth') &&
-    //     !request.nextUrl.pathname.startsWith('/error')
-    // ) {
-    //     // no user, potentially respond by redirecting the user to the login page
-    //     const url = request.nextUrl.clone()
-    //     url.pathname = '/login'
-    //     return NextResponse.redirect(url)
-    // }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
     // If you're creating a new response object with NextResponse.next() make sure to:

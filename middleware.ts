@@ -7,9 +7,9 @@ export async function middleware(request: NextRequest) {
     // const pathname = request.nextUrl.pathname;
     // response.headers.set("x-next-pathname", pathname);
     // return response;
-    }
+}
 
-    export const config = {
+export const config = {
     matcher: [
         /*
         * Match all request paths except for the ones starting with:

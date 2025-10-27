@@ -4,7 +4,7 @@ const AuthButton = ({
   type,
   loading,
 }: {
-  type: "login" | "Sign up" | "Reset Password" | "Forgot Password";
+  type: "Login" | "Sign Up" | "Reset Password" | "Forgot Password";
   loading: boolean;
 }) => {
   return (
@@ -12,8 +12,8 @@ const AuthButton = ({
       disabled={loading}
       type="submit"
       className={`${
-        loading ? "bg-gray-600" : "bg-blue-600"
-      } rounded-md w-full px-12 py-3 text-sm font-medium text-white`}
+        loading ? "bg-gray-600" : "bg-secondary"
+      } rounded-md w-full px-12 py-3 text-sl font-medium text-white cursor-pointer hover:bg-secondary-hover`}
     >
       {loading ? "Loading..." : type}
     </button>

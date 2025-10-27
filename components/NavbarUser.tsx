@@ -1,11 +1,9 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import React from "react";
-import SearchBar from "./SearchBar";
 import NavbarClient from "./NavbarClient";
-import UserDropdown from "./UserDropdown";
 
-const Navbar = async () => {
+const NavbarUser = async () => {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -20,21 +18,13 @@ const Navbar = async () => {
     }
     const isAdmin = !!(user && userRole === "admin");
 
-    const { data: allAnimeData } = await supabase
-        .from("anime")
-        .select("id, name, slug")
-        .order("name");
-
 return (
         <nav className="sticky top-0 z-50 bg-[#1e1e1e] border-b border-muted w-full flex items-center px-4 md:px-6 shadow-md">
             <div className="flex w-full items-center justify-between h-16 gap-x-6 md:gap-x-8">
                 <div className="flex items-center gap-x-4 flex-1">
-                <Link href="/" className="text-xl font-bold text-foreground whitespace-nowrap">
-                    HimaList
-                </Link>
-                <div className="w-full max-w-sm">
-                    <SearchBar allAnime={allAnimeData || []} />
-                </div>
+                    <Link href="/" className="text-xl font-bold text-foreground whitespace-nowrap">
+                        HimaList
+                    </Link>
                 </div>
 
                 <NavbarClient isAdmin={isAdmin} />
@@ -47,7 +37,7 @@ return (
                                 </div>
                             </Link>
                         ) : (
-                            <UserDropdown email={user?.email ?? ""} username={user?.user_metadata?.username} />
+                            null
                         )}
                     </div>
             </div>
@@ -55,4 +45,4 @@ return (
     );
 };
 
-export default Navbar;
+export default NavbarUser;

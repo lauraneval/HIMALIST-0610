@@ -1,13 +1,12 @@
-// lib/types.ts (atau di mana pun Anda ingin menempatkan tipe kustom)
-import type { Tables } from '@/types/database2.types';
 
-// Tipe dasar untuk Anime, Genre, dan Studio dari Supabase
+import type { Tables } from '@/types/database3';
+
 export type Anime = Tables<'anime'>;
 export type Genre = Tables<'genre'>;
 export type Studio = Tables<'studio'>;
+export type History = Tables<'history'>;
+export type Preference = Tables<'preference'>;
 
-// Tipe gabungan untuk hasil query kita.
-// Sebuah Anime dengan detail Studio (bisa null) dan array dari Genre.
 export type AnimeWithDetails = Anime & {
     studio: Studio | null;
     genre: Genre[];
@@ -16,4 +15,12 @@ export type AnimeWithDetails = Anime & {
 export type StudioGenre = {
     studio: Studio[];
     genre: Genre[];
+};
+
+export type WatchlistItemWithDetails = History & {
+    anime: AnimeWithDetails | null;
+};
+
+export type PreferenceWithGenre = Preference & {
+    genre: Genre | null;
 };

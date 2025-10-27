@@ -33,11 +33,16 @@ const config = {
 			secondary: {
 			DEFAULT: "hsl(var(--secondary))",
 			foreground: "hsl(var(--secondary-foreground))",
-			hover: "hsl(var(--secondary-hover))"
+			hover: "hsl(var(--secondary-hover))",
+			watchlist: "hsl(var(--secondary-watchlist))"
 			},
 			muted: {
 			DEFAULT: "hsl(var(--muted))",
 			foreground: "hsl(var(--muted-foreground))",
+			},
+			success: {
+			DEFAULT: "hsl(var(--success))",
+			hover: "hsl(var(--success-hover))"
 			},
 			accent: {
 			DEFAULT: "hsl(var(--accent))",

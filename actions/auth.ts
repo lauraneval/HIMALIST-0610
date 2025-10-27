@@ -151,6 +151,54 @@ export async function resetPassword(formData: FormData, code: string) {
     return { status: "success" };
 }
 
+export async function handleUpdateUsername(formData: FormData) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user || !user.email) {
+        return { status: "error", message: "You must login first"}
+    }
+
+    const newUsername = formData.get('username') as string;
+
+    if (!newUsername || newUsername.trim().length < 3) {
+        return { status: "error", message: "Username must be at least 3 characters long" };
+    }
+
+    const trimmedUsername = newUsername.trim();
+
+    const { error: updateError } = await supabase
+        .from('user')
+        .update({ username: trimmedUsername })
+        .eq('id', user.id)
+
+    if (updateError) {
+        console.error("Supabase update error:", updateError);
+        if (updateError.code === '23505') {
+            return { status: "error", message: "Username already taken" };
+        }
+        return { status: "error", message: "Failed to update username to databse" };
+    }
+
+    const supabaseAdmin = createServerAdmin(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { error: metaError } = await supabaseAdmin.auth.admin.updateUserById(
+        user.id,
+        { user_metadata: { username: trimmedUsername } }
+    );
+
+    if (metaError) {
+        console.error("Supabase update metadata error:", metaError);
+        return { status: "warning", message: "Username updated, but failed to sync metadata" };
+    }
+
+    revalidatePath("/profile");
+    return { status: "success", message: "Username updated successfully" };
+}
+
 export async function handleAddStudio(formData: FormData) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -653,4 +701,144 @@ export async function handleDeleteAnime(animeId: number) {
 
     revalidatePath("/admin/anime");
     return { status: "success", message: "Anime deleted successfully" };
+}
+
+export async function handleAddToHistory(animeId: number) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user || !user.email) {
+        return { status: "error", message: "You must login first"}
+    }
+
+    if (!animeId || isNaN(animeId)) {
+        return { status: "error", message: "Invalid Anime id" };
+    }
+
+    const { count, error: checkError } = await supabase
+        .from('history')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('anime_id', animeId);
+
+    if (checkError) {
+        console.error("History check error:", checkError);
+    }
+    if (count !== null && count > 0) {
+        return { status: "info", message: "Already in your history" };
+    }
+
+    const { error: insertError } = await supabase
+        .from('history')
+        .insert({
+            user_id: user.id,
+            anime_id: animeId
+        });
+
+    if (insertError) {
+        console.error("Supabase insert error:", insertError.message);
+        return { status: "error", message: "Failed to add history to database" };
+    }
+
+    revalidatePath("/anime");
+    return { status: "success", message: "Added to watched history" };
+}
+
+export async function handleRemoveFromHistory(historyId: number) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user || !user.email) {
+        return { status: "error", message: "You must login first"}
+    }
+
+    if (!historyId || isNaN(historyId)) {
+        return { status: "error", message: "Invalid history id" };
+    }
+
+    const { error: deleteError } = await supabase
+        .from('history')
+        .delete()
+        .eq('id', historyId)
+
+    if (deleteError) {
+        console.error("Supabase delete error:", deleteError.message);
+        return { status: "error", message: "Failed remove history from database" };
+    }
+
+    revalidatePath("/watchlist");
+    return { status: "success", message: "Removed from watchlist" };
+}
+
+export async function handleAddPreferences(genreId: number, type: 'like' | 'dislike') {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user || !user.email) {
+        return { status: "error", message: "You must login first"}
+    }
+
+    if (!genreId || isNaN(genreId)) {
+        return { status: "error", message: "Invalid genre id" };
+    }
+
+    if (type !== 'like' && type !== 'dislike') {
+        return { status: "error", message: "Invalid preference type" };
+    }
+
+    const { count, error: checkError } = await supabase
+        .from('preference')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('genre_id', genreId)
+        .eq('type', type);
+
+    if (checkError) {
+        console.error("Preference check error:", checkError);
+    }
+    if (count !== null && count > 0) {
+        return { status: "info", message: `Genre already in ${type} list` };
+    }
+
+    const { error: insertError } = await supabase
+        .from('preference')
+        .insert({
+            user_id: user.id,
+            genre_id: genreId,
+            type: type
+        });
+
+    if (insertError) {
+        console.error("Supabase insert error:", insertError.message);
+        return { status: "error", message: "Failed to add preference to database" };
+    }
+
+    revalidatePath("/preferences");
+    return { status: "success", message: `Genre added to ${type} list` };
+}
+
+export async function handleRemovePreferences(preferenceId: number) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user || !user.email) {
+        return { status: "error", message: "You must login first"}
+    }
+
+    if (!preferenceId || isNaN(preferenceId)) {
+        return { status: "error", message: "Invalid preference id" };
+    }
+
+    const { error: deleteError } = await supabase
+        .from('preference')
+        .delete()
+        .eq('id', preferenceId);
+
+    if (deleteError) {
+        console.error("Supabase delete error:", deleteError.message);
+        return { status: "error", message: "Failed remove preference from database" };
+    }
+
+    revalidatePath("/preferences");
+    return { status: "success", message: "Preference removed" };
 }

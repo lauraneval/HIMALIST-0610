@@ -64,7 +64,7 @@ const SignUpForm = () => {
           />
         </div>
         <div className="mt-4">
-          <AuthButton type="Sign up" loading={loading} />
+          <AuthButton type="Sign Up" loading={loading} />
         </div>
         {error && <p className="text-red-500">{error}</p>}
       </form>

@@ -52,7 +52,7 @@ const LoginForm = () => {
           />
         </div>
         <div className="mt-4">
-          <AuthButton type="login" loading={loading} />
+          <AuthButton type="Login" loading={loading} />
         </div>
         {error && <p className="text-red-500">{error}</p>}
       </form>

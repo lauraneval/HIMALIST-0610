@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     { protocol: "https", hostname: "i.imgur.com" },
     { protocol: "https", hostname: "cdn.myanimelist.net" },
     { protocol: "https", hostname: "cdn-eu.anidb.net" },
+    { protocol: "https", hostname: "wallpapercave.com" },
   ],
 },
 };

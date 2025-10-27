@@ -83,7 +83,7 @@ export default function StudioList(){
                         {studios.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={5} className="text-center text-muted-foreground py-10">
-                                    No studios found
+                                    No animes found
                                 </TableCell>
                             </TableRow>
                         ) : (
