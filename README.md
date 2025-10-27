@@ -123,7 +123,7 @@ Contain all configuration file, and asset system design structures.
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/activitydiagram/register.jpg" alt="ADRegister" width="65%"><br>
+      <img src="assets/activitydiagram/registrasi.jpg" alt="ADRegister" width="65%"><br>
       <sub><b>Image 1:</b> AD Register</sub>
     </td>
     <td align="center">
@@ -165,7 +165,7 @@ Contain all configuration file, and asset system design structures.
 <table align="center">
   <tr>
     <td align="center">
-      <img src="assets/sequencediagram/register.jpg" alt="SDRegister" width="65%"><br>
+      <img src="assets/sequencediagram/registrasi.jpg" alt="SDRegister" width="65%"><br>
       <sub><b>Image 1:</b> SD Register</sub>
     </td>
     <td align="center">
