@@ -17,7 +17,7 @@ const SignUpForm = () => {
     const result = await signUp(formData)
 
     if (result.status === "success") {
-      router.push("/login");
+      router.push("/confirm");
     } else {
       setError(result.status);
     }

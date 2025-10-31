@@ -1,5 +1,5 @@
 
-import type { Tables } from '@/types/database3';
+import type { Tables } from '@/types/database4';
 
 export type Anime = Tables<'anime'>;
 export type Genre = Tables<'genre'>;
@@ -23,4 +23,12 @@ export type WatchlistItemWithDetails = History & {
 
 export type PreferenceWithGenre = Preference & {
     genre: Genre | null;
+};
+
+export type RecommendedAnime = Pick<Anime, 'id' | 'name' | 'slug' | 'image'> & {
+    studio: Pick<Studio, 'name'> | null;
+};
+
+export type FetchedAnimeDetails = Pick<Anime, 'id' | 'name' | 'slug' | 'image'> & {
+    studio: Pick<Studio, 'id' | 'name'> | null;
 };

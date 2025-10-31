@@ -4,9 +4,11 @@ import { createClient } from "@/utils/supabase/client";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import Image from "next/image";
-import { AnimeWithDetails } from "@/lib/types";
+import { AnimeWithDetails, RecommendedAnime } from "@/lib/types";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { User } from "@supabase/supabase-js";
+import { getAnimeRecommendations } from "@/actions/auth";
 
 const HeroSection = () => (
     <div className="relative w-full h-[60vh] md:h-[70vh] rounded-lg overflow-hidden mb-12 shadow-2xl">
@@ -83,94 +85,178 @@ const HeroSection = () => (
 );
 
 export default function Dashboard() {
-    const [animeList, setAnimeList] = useState<AnimeWithDetails[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    const [recentAnimeList, setRecentAnimeList] = useState<AnimeWithDetails[]>([]);
+
+    const [recommendedAnimeList, setRecommendedAnimeList] = useState<RecommendedAnime[]>([]);
+    const [isLoadingRecent, setIsLoadingRecent] = useState(true);
+
+    const [isLoadingRecs, setIsLoadingRecs] = useState(true);
+    const [recMessage, setRecMessage] = useState("");
 
     useEffect(() => {
-        setIsLoading(true);
+        setIsLoadingRecent(true);
         const fetchAnime = async () => {
             const { data, error } = await createClient()
                 .from('anime')
                 .select('*, studio(*), genre(*)')
-                .order('created_at', { ascending: false }) 
+                .order('created_at', { ascending: false })
                 .limit(12);
 
             if (error) {
                 console.error('Error fetching anime:', error);
             } else {
-                setAnimeList(data || []);
+                setRecentAnimeList(data || []);
             }
-            setIsLoading(false);
+            setIsLoadingRecent(false);
         };
 
         fetchAnime();
+        const { data: authListener } = createClient().auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            if (!session?.user) {
+                setRecommendedAnimeList([]);
+                setIsLoadingRecs(false);
+            }
+        });
+        return () => { authListener?.subscription.unsubscribe(); };
     }, []);
+
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            if (user) {
+                setIsLoadingRecs(true);
+                setRecMessage("");
+
+                const result = await getAnimeRecommendations(user.id, 12);
+
+                if (result.status === "success" || result.status === "info") {
+                    setRecommendedAnimeList(result.recommendations as RecommendedAnime[]);
+                    if (result.recommendations.length === 0) {
+                        setRecMessage(result.message || "No recommendations yet. Watch more anime!");
+                    }
+                } else {
+                    console.error("Recommendation fetch error:", result.message);
+                    setRecMessage("Could not load recommendations.");
+                    setRecommendedAnimeList([]);
+                }
+                setIsLoadingRecs(false);
+            } else {
+                setRecommendedAnimeList([]);
+                setIsLoadingRecs(false);
+                setRecMessage("Login to see personalized recommendations!");
+            }
+        };
+
+        fetchRecommendations();
+    }, [user]);
 
     return (
         <div className="container mx-auto text-foreground">
             <HeroSection />
+            <section className="mb-12">
+                <h2 className="text-3xl font-bold mb-8 text-center text-foreground">Recently Added Anime</h2>
 
-            <h2 className="text-3xl font-bold mb-8 text-center text-foreground">Recently Added Anime</h2>
+                {isLoadingRecent && <p className="text-center text-muted-foreground">Loading anime...</p>}
 
-            {isLoading && <p className="text-center text-muted-foreground">Loading anime...</p>}
-
-            {!isLoading && animeList.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {animeList.map((anime) => (
-                        <Card
-                            key={anime.id}
-                            className="flex flex-col justify-between bg-[#2a2a2a] border border-muted rounded-lg text-foreground hover:scale-[1.03] transition-transform duration-300 shadow-lg overflow-hidden"
-                        >
-                            <CardContent className="p-0 flex flex-col flex-grow">
-                                <Link href={`/anime/${anime.slug || anime.id}`} className="block relative w-full aspect-[2/3]"> {/* Aspect ratio */}
-                                    <Image
-                                        src={anime.image || '/placeholder.png'}
-                                        alt={anime.name}
-                                        fill
-                                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                                        className="object-cover"
-                                    />
-                                </Link>
-                                <div className="p-4 flex flex-col flex-grow">
-                                    <h4 className="font-semibold text-md mb-1 break-words line-clamp-2 leading-tight">
-                                        {anime.name}
-                                    </h4>
-                                    <p className="text-xs text-muted-foreground mb-2">
-                                        {anime.studio?.name || 'Unknown Studio'}
-                                    </p>
-                                    <div className="flex flex-wrap gap-1 mt-auto pt-2">
-                                        {anime.genre.length > 0 ? (
-                                            anime.genre.slice(0, 3).map((g) => (
-                                                <span
-                                                    key={g.id}
-                                                    className="bg-muted text-muted-foreground text-[10px] px-2 py-0.5 rounded-full"
-                                                >
-                                                    {g.name}
-                                                </span>
-                                            ))
-                                        ) : (
-                                            <span className="text-xs text-muted-foreground italic">No Genre</span>
-                                        )}
-                                        {anime.genre.length > 3 && (
-                                            <span className="text-xs text-muted-foreground">...</span>
-                                        )}
+                {!isLoadingRecent && recentAnimeList.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {recentAnimeList.map((anime) => (
+                            <Card
+                                key={anime.id}
+                                className="flex flex-col justify-between bg-[#2a2a2a] border border-muted rounded-lg text-foreground hover:scale-[1.03] transition-transform duration-300 shadow-lg overflow-hidden"
+                            >
+                                <CardContent className="p-0 flex flex-col flex-grow">
+                                    <Link href={`/anime/${anime.slug || anime.id}`} className="block relative w-full aspect-[2/3]"> {/* Aspect ratio */}
+                                        <Image
+                                            src={anime.image || '/placeholder.png'}
+                                            alt={anime.name}
+                                            fill
+                                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                                            className="object-cover"
+                                        />
+                                    </Link>
+                                    <div className="p-4 flex flex-col flex-grow">
+                                        <h4 className="font-semibold text-md mb-1 break-words line-clamp-2 leading-tight">
+                                            {anime.name}
+                                        </h4>
+                                        <p className="text-xs text-muted-foreground mb-2">
+                                            {anime.studio?.name || 'Unknown Studio'}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1 mt-auto pt-2">
+                                            {anime.genre.length > 0 ? (
+                                                anime.genre.slice(0, 3).map((g) => (
+                                                    <span
+                                                        key={g.id}
+                                                        className="bg-muted text-muted-foreground text-[10px] px-2 py-0.5 rounded-full"
+                                                    >
+                                                        {g.name}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground italic">No Genre</span>
+                                            )}
+                                            {anime.genre.length > 3 && (
+                                                <span className="text-xs text-muted-foreground">...</span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="p-3 border-t border-muted">
-                                <Link href={`/anime/${anime.slug || anime.id}`} className="w-full">
-                                    <Button variant="outline" className="w-full font-semibold text-xs py-1.5 h-auto border-neutral-600 hover:bg-neutral-700">
-                                        View Details
-                                    </Button>
-                                </Link>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            )}
-            {!isLoading && animeList.length === 0 && (
-                <p className="text-center text-muted-foreground">No anime found</p>
-            )}
+                                </CardContent>
+                                <CardFooter className="p-3 border-t border-muted">
+                                    <Link href={`/anime/${anime.slug || anime.id}`} className="w-full">
+                                        <Button variant="outline" className="w-full font-semibold text-xs py-1.5 h-auto border-neutral-600 hover:bg-neutral-700">
+                                            View Details
+                                        </Button>
+                                    </Link>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+                {!isLoadingRecent && recentAnimeList.length === 0 && (
+                    <p className="text-center text-muted-foreground">No anime found</p>
+                )}
+            </section>
+            <section className="mb-12">
+                <h2 className="text-3xl font-bold mb-8 text-center text-foreground">Recommended For You</h2>
+                {isLoadingRecs ? (
+                    <p className="text-center text-muted-foreground">Loading recommendations...</p>
+                ) : !user ? (
+                    <p className="text-center text-muted-foreground">{recMessage}</p>
+                ) : recommendedAnimeList.length === 0 ? (
+                    <p className="text-center text-muted-foreground">{recMessage}</p>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"> 
+                        {recommendedAnimeList.map((anime) => (
+                            <Card
+                                key={anime.id}
+                                className="flex flex-col justify-between bg-[#2a2a2a] border border-muted rounded-lg text-foreground hover:scale-[1.03] transition-transform duration-300 shadow-lg overflow-hidden"
+                            >
+                                <CardContent className="p-0 flex flex-col flex-grow">
+                                    <Link href={`/anime/${anime.slug || anime.id}`} className="block relative w-full aspect-[2/3]">
+                                        <Image
+                                            src={anime.image || '/placeholder.png'}
+                                            alt={anime.name}
+                                            fill
+                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16.6vw"
+                                            className="object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </Link>
+                                    <div className="p-3 flex flex-col flex-grow">
+                                        <h4 className="font-semibold text-sm mb-0.5 break-words line-clamp-2 leading-tight">
+                                            {anime.name}
+                                        </h4>
+                                        <p className="text-xs text-muted-foreground mt-auto pt-1">
+                                            {anime.studio?.name || 'Unknown Studio'}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </section>
         </div>
     );
 }
